@@ -1,6 +1,7 @@
 package com.github.bicz.sitesculpt.security.filter;
 
 import com.github.bicz.sitesculpt.security.service.JwtService;
+import com.github.bicz.sitesculpt.user.model.User;
 import com.github.bicz.sitesculpt.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,11 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userEmail);
-        if (jwtService.isTokenValid(jwt, userDetails)) {
+        User user = (User) userService.userDetailsService().loadUserByUsername(userEmail);
+        if (jwtService.isTokenValid(jwt, user)) {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities()
+                    user, null, user.getAuthorities()
             );
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             context.setAuthentication(usernamePasswordAuthenticationToken);

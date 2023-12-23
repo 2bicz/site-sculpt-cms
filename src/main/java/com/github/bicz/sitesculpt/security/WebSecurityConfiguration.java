@@ -28,6 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
@@ -44,16 +45,14 @@ public class WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers(antMatcher(HttpMethod.GET, "/api/v1/user/**")).permitAll()
-                .requestMatchers(antMatcher(HttpMethod.POST, "/api/v1/auth/**")).permitAll()
-        )
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
-                );
-
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -69,20 +68,5 @@ public class WebSecurityConfiguration {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
             throws Exception {
         return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails adminUser = User.builder()
-                .username("admin")
-                .password(encoder().encode("admin"))
-                .roles("ADMIN", "USER")
-                .build();
-        UserDetails defaultUser = User.builder()
-                .username("defaultUser")
-                .password(encoder().encode("defaultUser"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(adminUser, defaultUser);
     }
 }

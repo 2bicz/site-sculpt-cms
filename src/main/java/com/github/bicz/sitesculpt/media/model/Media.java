@@ -7,6 +7,7 @@ import lombok.*;
 import java.util.Date;
 
 @Entity
+@Builder
 @Data
 @Table(name = "medias", uniqueConstraints = @UniqueConstraint(columnNames = "file_path"))
 @AllArgsConstructor
@@ -19,7 +20,13 @@ public class Media {
     private Long mediaId;
 
     @Column(name = "file_path")
+    @NonNull
     private String filePath;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    @NonNull
+    private MediaType type;
 
     @Column(name = "uploaded_at")
     @Temporal(TemporalType.TIMESTAMP)

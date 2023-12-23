@@ -1,6 +1,10 @@
 package com.github.bicz.sitesculpt.media.repository;
 
 import com.github.bicz.sitesculpt.media.model.Media;
-import org.springframework.data.repository.CrudRepository;
+import com.github.bicz.sitesculpt.user.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MediaRepository extends CrudRepository<Media, Long> {}
+import java.util.List;
+import java.util.Optional;
+
+public interface MediaRepository extends JpaRepository<Media, Long> {}

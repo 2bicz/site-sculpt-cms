@@ -37,6 +37,7 @@ public class User implements UserDetails {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
+    @NonNull
     private UserRole role;
 
     @Override
