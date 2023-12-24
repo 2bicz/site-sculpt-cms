@@ -1,9 +1,12 @@
 package com.github.bicz.sitesculpt.page.model;
 
+import com.github.bicz.sitesculpt.page_section.model.PageSection;
 import com.github.bicz.sitesculpt.theme.model.Theme;
 import com.github.bicz.sitesculpt.website.model.Website;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -36,4 +39,7 @@ public class Page {
     @Column(name = "place_order")
     @NonNull
     private Integer order;
+
+    @OneToMany(mappedBy = "page")
+    private List<PageSection> pageSections;
 }

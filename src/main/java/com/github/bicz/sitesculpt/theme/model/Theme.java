@@ -1,6 +1,7 @@
 package com.github.bicz.sitesculpt.theme.model;
 
 import com.github.bicz.sitesculpt.page.model.Page;
+import com.github.bicz.sitesculpt.page_section.model.PageSection;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -48,4 +49,7 @@ public class Theme {
 
     @OneToMany(mappedBy = "pageTheme")
     private List<Page> pages;
+
+    @OneToMany(mappedBy = "pageSectionTheme")
+    private List<PageSection> pageSections;
 }
