@@ -1,10 +1,12 @@
 package com.github.bicz.sitesculpt.media.model;
 
+import com.github.bicz.sitesculpt.component.model.PageComponent;
 import com.github.bicz.sitesculpt.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
@@ -35,4 +37,7 @@ public class Media {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User uploadedBy;
+
+    @OneToMany(mappedBy = "media")
+    List<PageComponent> components;
 }

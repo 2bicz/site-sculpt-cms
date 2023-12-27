@@ -1,5 +1,6 @@
 package com.github.bicz.sitesculpt.page_section.model;
 
+import com.github.bicz.sitesculpt.component.model.PageComponent;
 import com.github.bicz.sitesculpt.page.model.Page;
 import com.github.bicz.sitesculpt.theme.model.Theme;
 import jakarta.persistence.*;
@@ -57,4 +58,7 @@ public class PageSection {
 
     @OneToMany(mappedBy = "parentPageSection")
     private List<PageSection> childrenPageSections;
+
+    @OneToOne(mappedBy = "pageSection")
+    private PageComponent component;
 }
