@@ -41,14 +41,23 @@ public class PageSectionDtoMapper {
     }
 
     public PageSectionResponse mapPageSectionToPageSectionResponse(PageSection pageSection) {
-        return new PageSectionResponse(
-                pageSection.getPageSectionId(),
-                pageSection.getPage().getPageId(),
-                pageSection.getOrder(),
-                pageSection.getWidthPct(),
-                pageSection.getHeightPct(),
-                pageSection.getPageSectionTheme().getThemeId(),
-                pageSection.getParentPageSection().getPageSectionId()
-        );
+        PageSectionResponse response = new PageSectionResponse();
+
+        response.setPageSectionId(pageSection.getPageSectionId());
+        response.setOrder(pageSection.getOrder());
+        response.setWidthPct(pageSection.getWidthPct());
+        response.setHeightPct(pageSection.getHeightPct());
+
+        if (Objects.nonNull(pageSection.getPage())) {
+            response.setPageId(pageSection.getPage().getPageId());
+        }
+        if (Objects.nonNull(pageSection.getPageSectionTheme())) {
+            response.setThemeId(pageSection.getPageSectionTheme().getThemeId());
+        }
+        if (Objects.nonNull(pageSection.getParentPageSection())) {
+            response.setParentPageSectionId(pageSection.getParentPageSection().getPageSectionId());
+        }
+
+        return response;
     }
 }
