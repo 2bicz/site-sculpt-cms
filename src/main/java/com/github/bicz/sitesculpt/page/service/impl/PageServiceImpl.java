@@ -1,5 +1,6 @@
 package com.github.bicz.sitesculpt.page.service.impl;
 
+import com.github.bicz.sitesculpt.exception.RequestNotCorrectException;
 import com.github.bicz.sitesculpt.exception.ResourceNotFoundException;
 import com.github.bicz.sitesculpt.page.dto.PageRequest;
 import com.github.bicz.sitesculpt.page.dto.PageResponse;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -76,37 +78,35 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public Long updatePage(Long pageId, PageRequest request) throws ResourceNotFoundException {
+        if (Objects.isNull(pageId)) {
+            throw new RequestNotCorrectException("Provided page id is empty");
+        }
         requestValidator.validatePageRequest(request);
 
-        if (!doesPageExist(pageId)) {
-            throw new ResourceNotFoundException(String.format("Page with id %d not found", pageId));
-        }
+        Page page = obtainExistingPage(pageId);
+        page.setTitle(request.getTitle());
+        page.setPageTheme(obtainExistingTheme(request.getThemeId()));
+        page.setWebsite(obtainExistingWebsite(request.getWebsiteId()));
+        page.setOrder(request.getOrder());
 
-        return pageRepository.save(
-                new Page(
-                        pageId,
-                        request.getTitle(),
-                        obtainExistingTheme(request.getThemeId()),
-                        obtainExistingWebsite(request.getWebsiteId()),
-                        request.getOrder()
-                )
-        ).getPageId();
+        return pageRepository.save(page).getPageId();
     }
 
     @Override
-    public void deletePage(Long pageId) throws ResourceNotFoundException {
-        if (!doesPageExist(pageId)) {
+    public void deletePage(Long pageId) {
+        Page page = obtainExistingPage(pageId);
+        pageRepository.deleteById(page.getPageId());
+    }
+
+    private Page obtainExistingPage(Long pageId) throws ResourceNotFoundException {
+        Optional<Page> optionalPage = pageRepository.findById(pageId);
+        if (optionalPage.isEmpty()) {
             throw new ResourceNotFoundException(String.format("Page with id %d not found", pageId));
         }
-        pageRepository.deleteById(pageId);
+        return optionalPage.get();
     }
 
-    private Boolean doesPageExist(Long pageId) {
-        Optional<Page> optionalPage = pageRepository.findById(pageId);
-        return optionalPage.isPresent();
-    }
-
-    private Theme obtainExistingTheme(Long themeId) {
+    private Theme obtainExistingTheme(Long themeId) throws ResourceNotFoundException {
         Optional<Theme> optionalTheme = themeRepository.findById(themeId);
         if (optionalTheme.isEmpty()) {
             throw new ResourceNotFoundException(String.format("Theme with id %d not found", themeId));

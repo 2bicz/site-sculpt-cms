@@ -11,6 +11,7 @@ import com.github.bicz.sitesculpt.theme.repository.ThemeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -21,18 +22,22 @@ public class PageSectionDtoMapper {
     private final ThemeRepository themeRepository;
 
     public PageSection mapPageSectionRequestToPageSection(PageSectionRequest request) {
-        Optional<Page> optionalPage = pageRepository.findById(request.getPageId());
-        Optional<PageSection> optionalPageSectionParent = pageSectionRepository.findById(request.getParentPageSectionId());
-        Optional<Theme> optionalTheme = themeRepository.findById(request.getThemeId());
+        PageSection pageSection = new PageSection();
+        pageSection.setOrder(request.getOrder());
+        pageSection.setWidthPct(request.getWidthPct());
+        pageSection.setHeightPct(request.getHeightPct());
 
-        return new PageSection(
-                optionalPage.get(),
-                request.getOrder(),
-                request.getWidthPct(),
-                request.getHeightPct(),
-                optionalTheme.get(),
-                optionalPageSectionParent.get()
-        );
+        if (Objects.nonNull(request.getPageId())) {
+            pageSection.setPage(pageRepository.findById(request.getPageId()).get());
+        }
+        if (Objects.nonNull(request.getParentPageSectionId())) {
+            pageSection.setParentPageSection(pageSectionRepository.findById(request.getParentPageSectionId()).get());
+        }
+        if (Objects.nonNull(request.getThemeId())) {
+            pageSection.setPageSectionTheme(themeRepository.findById(request.getThemeId()).get());
+        }
+
+        return pageSection;
     }
 
     public PageSectionResponse mapPageSectionToPageSectionResponse(PageSection pageSection) {
