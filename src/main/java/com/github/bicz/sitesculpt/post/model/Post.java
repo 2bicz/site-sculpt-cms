@@ -1,6 +1,7 @@
 package com.github.bicz.sitesculpt.post.model;
 
 import com.github.bicz.sitesculpt.category.model.Category;
+import com.github.bicz.sitesculpt.comment.model.Comment;
 import com.github.bicz.sitesculpt.page.model.Page;
 import com.github.bicz.sitesculpt.user.model.User;
 import jakarta.persistence.*;
@@ -65,4 +66,7 @@ public class Post {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 }
