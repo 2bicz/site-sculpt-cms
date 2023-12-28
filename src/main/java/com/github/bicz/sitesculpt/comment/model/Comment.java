@@ -1,11 +1,13 @@
 package com.github.bicz.sitesculpt.comment.model;
 
 import com.github.bicz.sitesculpt.post.model.Post;
+import com.github.bicz.sitesculpt.reaction.model.Reaction;
 import com.github.bicz.sitesculpt.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
@@ -45,4 +47,7 @@ public class Comment {
     @Column(name = "status")
     @NonNull
     private CommentStatus status;
+
+    @OneToMany(mappedBy = "comment")
+    private List<Reaction> reactions;
 }
