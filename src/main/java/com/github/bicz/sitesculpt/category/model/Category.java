@@ -1,7 +1,10 @@
 package com.github.bicz.sitesculpt.category.model;
 
+import com.github.bicz.sitesculpt.post.model.Post;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -19,4 +22,7 @@ public class Category {
     @Column(name = "name")
     @NonNull
     private String name;
+
+    @ManyToMany(mappedBy = "categories")
+    private List<Post> posts;
 }
