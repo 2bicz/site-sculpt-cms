@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WebsiteRequest {
-    private String title;
-    private String description;
-    private String faviconPath;
+public class AddAdminRequest {
+    private Long websiteId;
     private String username;
 }

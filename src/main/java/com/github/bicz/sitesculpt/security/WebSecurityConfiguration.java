@@ -45,7 +45,7 @@ public class WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated()
@@ -68,5 +68,19 @@ public class WebSecurityConfiguration {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
             throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/v1/**", corsConfiguration);
+
+        return source;
     }
 }
