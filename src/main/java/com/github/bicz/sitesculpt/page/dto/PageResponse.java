@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class PageResponse {
     private Long pageId;
     private String title;
+    private String path;
     private Long pageThemeId;
     private Long websiteId;
     private Integer order;

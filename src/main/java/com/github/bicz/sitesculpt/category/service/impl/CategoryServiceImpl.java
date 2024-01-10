@@ -54,8 +54,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Long createCategory(CategoryRequest request) {
+    public Long createCategory(CategoryRequest request) throws RequestNotCorrectException {
         requestValidator.validateCategoryRequest(request);
+
+        if (doesCategoryNameAlreadyExist(request.getName())) {
+            throw new RequestNotCorrectException(String.format("Category with name %s already exist", request.getName()));
+        }
+
         return categoryRepository.save(mapper.mapCategoryRequestToCategory(request)).getCategoryId();
     }
 
@@ -67,6 +72,12 @@ public class CategoryServiceImpl implements CategoryService {
         requestValidator.validateCategoryRequest(request);
 
         Category category = obtainExistingCategory(categoryId);
+
+        if (!category.getName().equals(request.getName()) && doesCategoryNameAlreadyExist(request.getName())) {
+            throw new RequestNotCorrectException(String.format("Category with name %s already exist", request.getName()));
+        }
+
+
         Category categoryUpdate = mapper.mapCategoryRequestToCategory(request);
 
         category.setName(categoryUpdate.getName());
@@ -96,5 +107,19 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ResourceNotFoundException(String.format("Category with name %s does not exist", name));
         }
         return optionalCategory.get();
+    }
+
+    private Boolean doesCategoryNameAlreadyExist(String categoryName) {
+        List<Category> existingCategories = categoryRepository.findAll();
+
+        boolean result = false;
+        for (Category existingCategory : existingCategories) {
+            if (existingCategory.getName().equalsIgnoreCase(categoryName)) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 }

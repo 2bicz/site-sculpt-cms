@@ -1,6 +1,7 @@
 package com.github.bicz.sitesculpt.website.model;
 
 import com.github.bicz.sitesculpt.page.model.Page;
+import com.github.bicz.sitesculpt.post.model.Post;
 import com.github.bicz.sitesculpt.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,9 @@ public class Website {
 
     @OneToMany(mappedBy = "website")
     private List<Page> pages;
+
+    @OneToMany(mappedBy = "website")
+    private List<Post> posts;
 
     @ManyToMany(mappedBy = "websites")
     private List<User> admins;

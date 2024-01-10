@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.apache.logging.log4j.util.StringBuilders.equalsIgnoreCase;
+
 @Service
 @RequiredArgsConstructor
 public class PageServiceImpl implements PageService {
@@ -36,13 +38,19 @@ public class PageServiceImpl implements PageService {
         for (Optional<Page> optionalPage : optionalPages) {
             if (optionalPage.isPresent()) {
                 Page page = optionalPage.get();
-                result.add(new PageResponse(
-                   page.getPageId(),
-                   page.getTitle(),
-                   page.getPageTheme().getThemeId(),
-                   page.getWebsite().getWebsiteId(),
-                   page.getOrder()
-                ));
+                PageResponse pageResponse = new PageResponse();
+
+                pageResponse.setPageId(page.getPageId());
+                pageResponse.setTitle(page.getTitle());
+                pageResponse.setPath(page.getPath());
+                pageResponse.setWebsiteId(page.getWebsite().getWebsiteId());
+                pageResponse.setOrder(page.getOrder());
+
+                if (Objects.nonNull(page.getPageTheme())) {
+                    pageResponse.setPageThemeId(page.getPageTheme().getThemeId());
+                }
+
+                result.add(pageResponse);
             }
         }
 
@@ -60,6 +68,7 @@ public class PageServiceImpl implements PageService {
         return new PageResponse(
                 page.getPageId(),
                 page.getTitle(),
+                page.getPath(),
                 page.getPageTheme().getThemeId(),
                 page.getWebsite().getWebsiteId(),
                 page.getOrder()
@@ -67,26 +76,53 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public Long createPage(PageRequest request) throws ResourceNotFoundException {
+    public Long createPage(PageRequest request) throws RequestNotCorrectException, ResourceNotFoundException {
         requestValidator.validatePageRequest(request);
-
-        Theme theme = obtainExistingTheme(request.getThemeId());
         Website website = obtainExistingWebsite(request.getWebsiteId());
 
-        return pageRepository.save(new Page(request.getTitle(), theme, website, request.getOrder())).getPageId();
+        if (doesPagePathAlreadyExistsForWebsite(request.getPath(), website)) {
+            throw new RequestNotCorrectException(String.format("Path %s already exists for website with id %d", request.getPath(), website.getWebsiteId()));
+        }
+
+        Page page = new Page();
+
+        if (Objects.nonNull(request.getThemeId())) {
+            Optional<Theme> optionalTheme = themeRepository.findById(request.getThemeId());
+            optionalTheme.ifPresent(page::setPageTheme);
+        }
+
+        page.setTitle(request.getTitle());
+        page.setPath(request.getPath());
+        page.setWebsite(website);
+        page.setOrder(request.getOrder());
+
+        return pageRepository.save(page).getPageId();
     }
 
     @Override
-    public Long updatePage(Long pageId, PageRequest request) throws ResourceNotFoundException {
+    public Long updatePage(Long pageId, PageRequest request) throws RequestNotCorrectException, ResourceNotFoundException {
         if (Objects.isNull(pageId)) {
             throw new RequestNotCorrectException("Provided page id is empty");
         }
         requestValidator.validatePageRequest(request);
+        Website website = obtainExistingWebsite(request.getWebsiteId());
 
         Page page = obtainExistingPage(pageId);
+
+        if (!page.getPath().equals(request.getPath())) {
+            if (doesPagePathAlreadyExistsForWebsite(request.getPath(), website)) {
+                throw new RequestNotCorrectException(String.format("Path %s already exists for website with id %d", request.getPath(), website.getWebsiteId()));
+            }
+        }
+
+        if (Objects.nonNull(request.getThemeId())) {
+            Optional<Theme> optionalTheme = themeRepository.findById(request.getThemeId());
+            optionalTheme.ifPresent(page::setPageTheme);
+        }
+
         page.setTitle(request.getTitle());
-        page.setPageTheme(obtainExistingTheme(request.getThemeId()));
-        page.setWebsite(obtainExistingWebsite(request.getWebsiteId()));
+        page.setPath(request.getPath());
+        page.setWebsite(website);
         page.setOrder(request.getOrder());
 
         return pageRepository.save(page).getPageId();
@@ -106,19 +142,29 @@ public class PageServiceImpl implements PageService {
         return optionalPage.get();
     }
 
-    private Theme obtainExistingTheme(Long themeId) throws ResourceNotFoundException {
-        Optional<Theme> optionalTheme = themeRepository.findById(themeId);
-        if (optionalTheme.isEmpty()) {
-            throw new ResourceNotFoundException(String.format("Theme with id %d not found", themeId));
-        }
-        return optionalTheme.get();
-    }
-
     private Website obtainExistingWebsite(Long websiteId) throws ResourceNotFoundException {
         Optional<Website> optionalWebsite = websiteRepository.findById(websiteId);
         if (optionalWebsite.isEmpty()) {
             throw new ResourceNotFoundException(String.format("Website with id %d not found", websiteId));
         }
         return optionalWebsite.get();
+    }
+
+    private Boolean doesPagePathAlreadyExistsForWebsite(String path, Website website) {
+        List<Page> pages = new ArrayList<>();
+        if (Objects.isNull(website.getPages()) || website.getPages().isEmpty()) {
+            return false;
+        }
+        pages = website.getPages();
+
+        boolean result = false;
+        for (Page page : pages) {
+            if (path.equalsIgnoreCase(page.getPath())) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 }

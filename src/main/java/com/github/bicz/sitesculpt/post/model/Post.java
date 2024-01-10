@@ -5,6 +5,7 @@ import com.github.bicz.sitesculpt.comment.model.Comment;
 import com.github.bicz.sitesculpt.page.model.Page;
 import com.github.bicz.sitesculpt.reaction.model.Reaction;
 import com.github.bicz.sitesculpt.user.model.User;
+import com.github.bicz.sitesculpt.website.model.Website;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -26,11 +27,10 @@ public class Post {
     @Column(name = "post_id")
     private Long postId;
 
-    @OneToOne
-    @JoinColumn(name = "page_id")
-    @RestResource(path = "postPage", rel = "page")
+    @ManyToOne
     @NonNull
-    private Page page;
+    @JoinColumn(name = "website_id")
+    private Website website;
 
     @Column(name = "title")
     @NonNull

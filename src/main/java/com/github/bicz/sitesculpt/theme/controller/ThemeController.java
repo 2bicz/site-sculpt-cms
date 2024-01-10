@@ -18,7 +18,7 @@ public class ThemeController {
     @Autowired
     ThemeService themeService;
 
-    @GetMapping("/get-all")
+    @GetMapping
     ResponseEntity<List<ThemeResponse>> getAllThemes() {
         return new ResponseEntity<>(themeService.getAllThemes(), HttpStatus.OK);
     }
@@ -43,7 +43,7 @@ public class ThemeController {
         }
     }
 
-    @PostMapping("/{themeId}")
+    @PostMapping("/update/{themeId}")
     ResponseEntity<?> updateTheme(@PathVariable Long themeId, @RequestBody ThemeRequest request) {
         try {
             return new ResponseEntity<>(themeService.updateTheme(themeId, request), HttpStatus.OK);
@@ -54,7 +54,7 @@ public class ThemeController {
         }
     }
 
-    @DeleteMapping("/{themeId}")
+    @DeleteMapping("/delete/{themeId}")
     ResponseEntity<?> deleteTheme(@PathVariable Long themeId) {
         try {
             themeService.deleteThemeById(themeId);

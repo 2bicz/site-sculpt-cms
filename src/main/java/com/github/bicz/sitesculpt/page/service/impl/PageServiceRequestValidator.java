@@ -2,8 +2,12 @@ package com.github.bicz.sitesculpt.page.service.impl;
 
 import com.github.bicz.sitesculpt.exception.RequestNotCorrectException;
 import com.github.bicz.sitesculpt.page.dto.PageRequest;
+import com.github.bicz.sitesculpt.page.repository.PageRepository;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -20,8 +24,8 @@ public class PageServiceRequestValidator {
         if (Objects.isNull(request.getTitle())) {
             emptyRequiredFieldsNames.add("title");
         }
-        if (Objects.isNull(request.getThemeId())) {
-            emptyRequiredFieldsNames.add("theme id");
+        if (Objects.isNull(request.getPath())) {
+            emptyRequiredFieldsNames.add("path");
         }
         if (Objects.isNull(request.getWebsiteId())) {
             emptyRequiredFieldsNames.add("website id");

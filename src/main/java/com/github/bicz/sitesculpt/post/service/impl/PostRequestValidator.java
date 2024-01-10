@@ -15,14 +15,11 @@ public class PostRequestValidator {
         if (request == null) {
             throw new RequestNotCorrectException("Provided request is empty");
         }
-        if (Objects.isNull(request.getPageId())) {
-            emptyRequiredFieldsNames.add("page id");
+        if (Objects.isNull(request.getWebsiteId())) {
+            emptyRequiredFieldsNames.add("website id");
         }
         if (Objects.isNull(request.getTitle())) {
             emptyRequiredFieldsNames.add("title");
-        }
-        if (Objects.isNull(request.getStatus())) {
-            emptyRequiredFieldsNames.add("status");
         }
 
         if (!emptyRequiredFieldsNames.isEmpty()) {

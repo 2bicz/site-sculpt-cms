@@ -26,8 +26,11 @@ public class Page {
     @NonNull
     private String title;
 
-    @ManyToOne
+    @Column(name = "path")
     @NonNull
+    private String path;
+
+    @ManyToOne
     @JoinColumn(name = "theme_id")
     private Theme pageTheme;
 

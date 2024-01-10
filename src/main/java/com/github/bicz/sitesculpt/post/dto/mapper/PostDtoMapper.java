@@ -7,6 +7,7 @@ import com.github.bicz.sitesculpt.post.dto.PostRequest;
 import com.github.bicz.sitesculpt.post.dto.PostResponse;
 import com.github.bicz.sitesculpt.post.model.Post;
 import com.github.bicz.sitesculpt.post.model.PostStatus;
+import com.github.bicz.sitesculpt.website.repository.WebsiteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,17 +18,16 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class PostDtoMapper {
-    private final PageRepository pageRepository;
+    private final WebsiteRepository websiteRepository;
     private final CategoryRepository categoryRepository;
 
     public Post mapPostRequestToPost(PostRequest request) {
         Post post = new Post();
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
-        post.setStatus(PostStatus.valueOf(request.getStatus()));
 
-        if (Objects.nonNull(request.getPageId())) {
-            post.setPage(pageRepository.findById(request.getPageId()).get());
+        if (Objects.nonNull(request.getWebsiteId())) {
+            post.setWebsite(websiteRepository.findById(request.getWebsiteId()).get());
         }
 
         ArrayList<Category> categories = new ArrayList<>();
@@ -53,10 +53,8 @@ public class PostDtoMapper {
         response.setCreatedAt(post.getCreatedAt());
         response.setLastModifiedAt(post.getLastModifiedAt());
         response.setStatus(post.getStatus().toString());
+        response.setWebsiteId(post.getWebsite().getWebsiteId());
 
-        if (Objects.nonNull(post.getPage())) {
-            response.setPageId(post.getPage().getPageId());
-        }
         if (Objects.nonNull(post.getCreatedBy())) {
             response.setCreatedById(post.getCreatedBy().getUserId());
         }
