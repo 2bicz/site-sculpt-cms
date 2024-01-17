@@ -1,6 +1,5 @@
 package com.github.bicz.sitesculpt.user.model;
 
-import com.github.bicz.sitesculpt.website.model.Website;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,14 +39,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @NonNull
     private UserRole role;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "website_admin",
-            joinColumns = @JoinColumn(name = "website_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<Website> websites;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

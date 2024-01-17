@@ -8,18 +8,45 @@ import com.github.bicz.sitesculpt.component.repository.PageComponentRepository;
 import com.github.bicz.sitesculpt.component.service.PageComponentService;
 import com.github.bicz.sitesculpt.exception.RequestNotCorrectException;
 import com.github.bicz.sitesculpt.exception.ResourceNotFoundException;
+import com.github.bicz.sitesculpt.page.model.Page;
+import com.github.bicz.sitesculpt.page_section.dto.PageSectionResponse;
+import com.github.bicz.sitesculpt.page_section.model.PageSection;
+import com.github.bicz.sitesculpt.page_section.repository.PageSectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class PageComponentServiceImpl implements PageComponentService {
     private final PageComponentRepository pageComponentRepository;
+    private final PageSectionRepository pageSectionRepository;
     private final PageComponentRequestValidator requestValidator;
     private final PageComponentDtoMapper mapper;
+
+    @Override
+    public List<PageComponentResponse> getAllByPageSection(Long pageSectionId) {
+        if (Objects.isNull(pageSectionId)) {
+            throw new RequestNotCorrectException("Provided page section id is empty");
+        }
+        ArrayList<PageComponentResponse> result = new ArrayList<>();
+
+        PageSection pageSection = obtainExistingPageSection(pageSectionId);
+        ArrayList<PageComponent> pageComponents = (ArrayList<PageComponent>) pageComponentRepository.findAllByPageSection(pageSection);
+
+        for (PageComponent pageComponent : pageComponents) {
+            if (!Objects.isNull(pageComponent)) {
+                result.add(mapper.mapPageComponentToPageComponentResponse(pageComponent));
+            }
+        }
+
+        result.sort(Comparator.comparingInt(PageComponentResponse::getOrder));
+
+        return result;
+    }
+
+
 
     @Override
     public PageComponentResponse getComponentById(Long pageComponentId) {
@@ -49,8 +76,8 @@ public class PageComponentServiceImpl implements PageComponentService {
         PageComponent pageComponent = obtainExistingPageComponent(componentId);
         pageComponent.setType(pageComponentUpdate.getType());
         pageComponent.setPageSection(pageComponentUpdate.getPageSection());
-        pageComponent.setCustomCss(pageComponentUpdate.getCustomCss());
         pageComponent.setContent(pageComponentUpdate.getContent());
+        pageComponent.setOrder(pageComponentUpdate.getOrder());
 
         return pageComponentRepository.save(pageComponent).getComponentId();
     }
@@ -70,5 +97,13 @@ public class PageComponentServiceImpl implements PageComponentService {
             throw new ResourceNotFoundException(String.format("Page component with id %d does not exist", pageComponentId));
         }
         return optionalPageComponent.get();
+    }
+
+    private PageSection obtainExistingPageSection(Long pageSectionId) throws ResourceNotFoundException {
+        Optional<PageSection> optionalPageSection = pageSectionRepository.findById(pageSectionId);
+        if (optionalPageSection.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("Page section with id %d does not exist", pageSectionId));
+        }
+        return optionalPageSection.get();
     }
 }

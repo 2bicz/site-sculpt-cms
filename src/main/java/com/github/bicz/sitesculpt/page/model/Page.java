@@ -2,10 +2,8 @@ package com.github.bicz.sitesculpt.page.model;
 
 import com.github.bicz.sitesculpt.page_section.model.PageSection;
 import com.github.bicz.sitesculpt.theme.model.Theme;
-import com.github.bicz.sitesculpt.website.model.Website;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.List;
 
 @Entity
@@ -14,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
-@Table(name = "pages")
+@Table(name = "pages", uniqueConstraints = @UniqueConstraint(columnNames = {"path", "place_order"}))
 public class Page {
 
     @Id
@@ -34,15 +32,14 @@ public class Page {
     @JoinColumn(name = "theme_id")
     private Theme pageTheme;
 
-    @ManyToOne
-    @NonNull
-    @JoinColumn(name = "website_id")
-    private Website website;
-
     @Column(name = "place_order")
     @NonNull
     private Integer order;
 
     @OneToMany(mappedBy = "page")
+    @ToString.Exclude
     private List<PageSection> pageSections;
+
+    @Column(name = "is_blog_page")
+    private Boolean isBlogPage;
 }

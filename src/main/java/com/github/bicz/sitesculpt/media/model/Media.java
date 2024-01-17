@@ -37,7 +37,4 @@ public class Media {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User uploadedBy;
-
-    @OneToMany(mappedBy = "media")
-    List<PageComponent> components;
 }

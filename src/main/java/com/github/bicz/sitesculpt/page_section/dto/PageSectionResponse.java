@@ -13,8 +13,5 @@ public class PageSectionResponse {
     private Long pageSectionId;
     private Long pageId;
     private Integer order;
-    private Double widthPct;
-    private Double heightPct;
-    private Long themeId;
-    private Long parentPageSectionId;
+    private Integer columnCount;
 }

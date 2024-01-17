@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PageComponentResponse {
     private Long componentId;
-    private String type;
     private Long pageSectionId;
-    private Long mediaId;
-    private String customCss;
+    private String type;
     private String content;
+    private Integer order;
 }

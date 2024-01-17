@@ -12,7 +12,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
-@Table(name = "components")
+@Table(name = "components", uniqueConstraints = @UniqueConstraint(columnNames = {"place_order"}))
 public class PageComponent {
 
     @Id
@@ -25,19 +25,16 @@ public class PageComponent {
     @NonNull
     private PageComponentType type;
 
-    @OneToOne
-    @JoinColumn(name = "page_section_id")
-    @RestResource(path = "componentPageSection", rel = "pageSection")
-    @NonNull
-    private PageSection pageSection;
-
     @ManyToOne
-    @JoinColumn(name = "media_id")
-    private Media media;
-
-    @Column(name = "custom_css")
-    private String customCss;
+    @JoinColumn(name = "page_section_id")
+    @NonNull
+    @ToString.Exclude
+    private PageSection pageSection;
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "place_order")
+    @NonNull
+    private Integer order;
 }

@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostRequest {
-    private Long websiteId;
     private String title;
     private String content;
     private List<Long> categoriesIds;

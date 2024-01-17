@@ -21,12 +21,6 @@ public class PageSectionRequestValidator {
         if (Objects.isNull(request.getOrder())) {
             emptyRequiredFieldsNames.add("order");
         }
-        if (Objects.isNull(request.getWidthPct())) {
-            emptyRequiredFieldsNames.add("width percentage");
-        }
-        if (Objects.isNull(request.getHeightPct())) {
-            emptyRequiredFieldsNames.add("height percentage");
-        }
 
         if (!emptyRequiredFieldsNames.isEmpty()) {
             throw new RequestNotCorrectException(buildProvidedEmptyExceptionMessage(emptyRequiredFieldsNames));

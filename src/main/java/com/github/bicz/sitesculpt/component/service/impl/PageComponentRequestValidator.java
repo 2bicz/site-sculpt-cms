@@ -22,6 +22,9 @@ public class PageComponentRequestValidator {
         if (Objects.isNull(request.getPageSectionId())) {
             emptyRequiredFieldsNames.add("page section id");
         }
+        if (Objects.isNull(request.getOrder())) {
+            emptyRequiredFieldsNames.add("order");
+        }
 
         if (!emptyRequiredFieldsNames.isEmpty()) {
             throw new RequestNotCorrectException(buildProvidedEmptyExceptionMessage(emptyRequiredFieldsNames));

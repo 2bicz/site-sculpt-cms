@@ -15,6 +15,6 @@ public class PageResponse {
     private String title;
     private String path;
     private Long pageThemeId;
-    private Long websiteId;
     private Integer order;
+    private Boolean isBlogPage;
 }

@@ -14,18 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
-@Table(name = "page_sections")
+@Table(name = "page_sections", uniqueConstraints = @UniqueConstraint(columnNames = {"place_order"}))
 public class PageSection {
-
-    public PageSection(Page page, Integer order, Double widthPct, Double heightPct, Theme pageSectionTheme, PageSection parentPageSection) {
-        this.page = page;
-        this.order = order;
-        this.widthPct = widthPct;
-        this.heightPct = heightPct;
-        this.pageSectionTheme = pageSectionTheme;
-        this.parentPageSection = parentPageSection;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "page_section_id")
@@ -40,25 +30,11 @@ public class PageSection {
     @NonNull
     private Integer order;
 
-    @Column(name = "width_pct")
-    @NonNull
-    private Double widthPct;
-
-    @Column(name = "height_pct")
-    @NonNull
-    private Double heightPct;
-
     @ManyToOne
     @JoinColumn(name = "theme_id")
     private Theme pageSectionTheme;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_section_id")
-    private PageSection parentPageSection;
-
-    @OneToMany(mappedBy = "parentPageSection")
-    private List<PageSection> childrenPageSections;
-
-    @OneToOne(mappedBy = "pageSection")
-    private PageComponent component;
+    @OneToMany(mappedBy = "pageSection")
+    @ToString.Exclude
+    private List<PageComponent> components;
 }

@@ -21,15 +21,6 @@ public class PostController {
     @Autowired
     PostService postService;
 
-    @GetMapping("/get-all-by-website/{websiteId}")
-    ResponseEntity<?> getAllPostsOfWebsite(@PathVariable Long websiteId) {
-        try {
-            return new ResponseEntity<>(postService.getAllPostsOfWebsite(websiteId), HttpStatus.OK);
-        } catch (ResourceNotFoundException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-        }
-    }
-
     @GetMapping("/{postId}")
     ResponseEntity<?> getPostById(@PathVariable Long postId) {
         try {

@@ -15,6 +15,17 @@ public class PageComponentController {
     @Autowired
     PageComponentService pageComponentService;
 
+    @GetMapping("/get-all-by-page-section/{pageSectionId}")
+    ResponseEntity<?> getAllComponentsOfThePageSection(@PathVariable Long pageSectionId) {
+        try {
+            return new ResponseEntity<>(pageComponentService.getAllByPageSection(pageSectionId), HttpStatus.OK);
+        } catch (RequestNotCorrectException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (ResourceNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
+
     @GetMapping("/{pageComponentId}")
     ResponseEntity<?> getPageComponentById(@PathVariable Long pageComponentId) {
         try {

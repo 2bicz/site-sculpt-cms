@@ -13,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostResponse {
-    private Long websiteId;
     private String title;
     private String content;
     private Date createdAt;

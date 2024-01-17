@@ -13,10 +13,7 @@ import com.github.bicz.sitesculpt.page_section.service.PageSectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +38,8 @@ public class PageSectionServiceImpl implements PageSectionService {
                 result.add(mapper.mapPageSectionToPageSectionResponse(pageSection));
             }
         }
+
+        result.sort(Comparator.comparingInt(PageSectionResponse::getOrder));
 
         return result;
     }
@@ -68,9 +67,6 @@ public class PageSectionServiceImpl implements PageSectionService {
         PageSection pageSectionUpdate = mapper.mapPageSectionRequestToPageSection(request);
         pageSection.setPage(pageSectionUpdate.getPage());
         pageSection.setOrder(pageSectionUpdate.getOrder());
-        pageSection.setWidthPct(pageSectionUpdate.getWidthPct());
-        pageSection.setPageSectionTheme(pageSectionUpdate.getPageSectionTheme());
-        pageSection.setParentPageSection(pageSectionUpdate.getParentPageSection());
 
         return pageSectionRepository.save(pageSection).getPageSectionId();
     }

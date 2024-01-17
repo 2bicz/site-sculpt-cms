@@ -12,8 +12,4 @@ import lombok.NoArgsConstructor;
 public class PageSectionRequest {
     private Long pageId;
     private Integer order;
-    private Double widthPct;
-    private Double heightPct;
-    private Long themeId;
-    private Long parentPageSectionId;
 }

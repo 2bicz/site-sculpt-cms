@@ -1,25 +1,35 @@
-package com.github.bicz.sitesculpt.post.service.impl;
+package com.github.bicz.sitesculpt.page.dto;
 
 import com.github.bicz.sitesculpt.exception.RequestNotCorrectException;
-import com.github.bicz.sitesculpt.post.dto.PostRequest;
+import com.github.bicz.sitesculpt.page.dto.PageRequest;
+import com.github.bicz.sitesculpt.page.repository.PageRepository;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 @Component
-public class PostRequestValidator {
-    public void validatePostRequest(PostRequest request) throws RequestNotCorrectException {
+@NoArgsConstructor
+public class PageServiceRequestValidator {
+    public void validatePageRequest(PageRequest request) throws RequestNotCorrectException {
         ArrayList<String> emptyRequiredFieldsNames = new ArrayList<>();
 
         if (request == null) {
             throw new RequestNotCorrectException("Provided request is empty");
         }
-        if (Objects.isNull(request.getWebsiteId())) {
-            emptyRequiredFieldsNames.add("website id");
-        }
         if (Objects.isNull(request.getTitle())) {
             emptyRequiredFieldsNames.add("title");
+        }
+        if (Objects.isNull(request.getPath())) {
+            emptyRequiredFieldsNames.add("path");
+        }
+        if (Objects.isNull(request.getOrder())) {
+            emptyRequiredFieldsNames.add("order");
         }
 
         if (!emptyRequiredFieldsNames.isEmpty()) {

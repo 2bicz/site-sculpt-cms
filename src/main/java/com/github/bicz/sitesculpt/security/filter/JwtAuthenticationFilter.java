@@ -33,6 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String username;
 
         if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
+            System.out.println("NO AUTH HEADER PASSED");
             filterChain.doFilter(request, response);
             return;
         }

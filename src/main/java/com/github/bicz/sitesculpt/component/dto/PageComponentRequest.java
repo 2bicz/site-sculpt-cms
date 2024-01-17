@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PageComponentRequest {
-    private String type;
     private Long pageSectionId;
-    private Long mediaId;
-    private String customCss;
+    private String type;
     private String content;
+    private Integer order;
 }

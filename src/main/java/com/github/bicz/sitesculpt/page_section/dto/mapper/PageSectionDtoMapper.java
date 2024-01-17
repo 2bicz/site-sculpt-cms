@@ -17,24 +17,14 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class PageSectionDtoMapper {
-    private final PageSectionRepository pageSectionRepository;
     private final PageRepository pageRepository;
-    private final ThemeRepository themeRepository;
 
     public PageSection mapPageSectionRequestToPageSection(PageSectionRequest request) {
         PageSection pageSection = new PageSection();
         pageSection.setOrder(request.getOrder());
-        pageSection.setWidthPct(request.getWidthPct());
-        pageSection.setHeightPct(request.getHeightPct());
 
         if (Objects.nonNull(request.getPageId())) {
             pageSection.setPage(pageRepository.findById(request.getPageId()).get());
-        }
-        if (Objects.nonNull(request.getParentPageSectionId())) {
-            pageSection.setParentPageSection(pageSectionRepository.findById(request.getParentPageSectionId()).get());
-        }
-        if (Objects.nonNull(request.getThemeId())) {
-            pageSection.setPageSectionTheme(themeRepository.findById(request.getThemeId()).get());
         }
 
         return pageSection;
@@ -42,20 +32,14 @@ public class PageSectionDtoMapper {
 
     public PageSectionResponse mapPageSectionToPageSectionResponse(PageSection pageSection) {
         PageSectionResponse response = new PageSectionResponse();
-
         response.setPageSectionId(pageSection.getPageSectionId());
         response.setOrder(pageSection.getOrder());
-        response.setWidthPct(pageSection.getWidthPct());
-        response.setHeightPct(pageSection.getHeightPct());
+        response.setPageId(pageSection.getPage().getPageId());
 
-        if (Objects.nonNull(pageSection.getPage())) {
-            response.setPageId(pageSection.getPage().getPageId());
-        }
-        if (Objects.nonNull(pageSection.getPageSectionTheme())) {
-            response.setThemeId(pageSection.getPageSectionTheme().getThemeId());
-        }
-        if (Objects.nonNull(pageSection.getParentPageSection())) {
-            response.setParentPageSectionId(pageSection.getParentPageSection().getPageSectionId());
+        if (Objects.nonNull(pageSection.getComponents())) {
+            response.setColumnCount(pageSection.getComponents().size());
+        } else {
+            response.setColumnCount(0);
         }
 
         return response;

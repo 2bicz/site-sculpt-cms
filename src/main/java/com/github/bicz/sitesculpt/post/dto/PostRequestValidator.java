@@ -1,21 +1,15 @@
-package com.github.bicz.sitesculpt.page.service.impl;
+package com.github.bicz.sitesculpt.post.dto;
 
 import com.github.bicz.sitesculpt.exception.RequestNotCorrectException;
-import com.github.bicz.sitesculpt.page.dto.PageRequest;
-import com.github.bicz.sitesculpt.page.repository.PageRepository;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.bicz.sitesculpt.post.dto.PostRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 @Component
-@NoArgsConstructor
-public class PageServiceRequestValidator {
-    public void validatePageRequest(PageRequest request) throws RequestNotCorrectException {
+public class PostRequestValidator {
+    public void validatePostRequest(PostRequest request) throws RequestNotCorrectException {
         ArrayList<String> emptyRequiredFieldsNames = new ArrayList<>();
 
         if (request == null) {
@@ -23,15 +17,6 @@ public class PageServiceRequestValidator {
         }
         if (Objects.isNull(request.getTitle())) {
             emptyRequiredFieldsNames.add("title");
-        }
-        if (Objects.isNull(request.getPath())) {
-            emptyRequiredFieldsNames.add("path");
-        }
-        if (Objects.isNull(request.getWebsiteId())) {
-            emptyRequiredFieldsNames.add("website id");
-        }
-        if (Objects.isNull(request.getOrder())) {
-            emptyRequiredFieldsNames.add("order");
         }
 
         if (!emptyRequiredFieldsNames.isEmpty()) {
@@ -55,3 +40,5 @@ public class PageServiceRequestValidator {
         return message;
     }
 }
+
+

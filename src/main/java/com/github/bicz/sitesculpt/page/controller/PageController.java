@@ -3,6 +3,7 @@ package com.github.bicz.sitesculpt.page.controller;
 import com.github.bicz.sitesculpt.exception.RequestNotCorrectException;
 import com.github.bicz.sitesculpt.exception.ResourceNotFoundException;
 import com.github.bicz.sitesculpt.page.dto.PageRequest;
+import com.github.bicz.sitesculpt.page.dto.PageResponse;
 import com.github.bicz.sitesculpt.page.service.PageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,13 +18,9 @@ public class PageController {
     @Autowired
     PageService pageService;
 
-    @GetMapping("/get-all-by-website/{websiteId}")
-    ResponseEntity<?> getAllPagesOfWebsite(@PathVariable Long websiteId) {
-        try {
-            return new ResponseEntity<>(pageService.getAllPagesOfWebsite(websiteId), HttpStatus.OK);
-        } catch (ResourceNotFoundException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-        }
+    @GetMapping
+    ResponseEntity<List<PageResponse>> getAllPages() {
+        return new ResponseEntity<>(pageService.getAllPages(), HttpStatus.OK);
     }
 
     @GetMapping("/{pageId}")
