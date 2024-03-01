@@ -16,4 +16,8 @@ public class ThemeRequest {
     private String secondaryColor;
     private String tertiaryColor;
     private String backgroundColor;
+    private String websiteTitle;
+    private String faviconPath;
+    private String logoPath;
+    private Boolean isCurrent;
 }

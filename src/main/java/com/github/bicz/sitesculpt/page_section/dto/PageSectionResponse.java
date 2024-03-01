@@ -13,5 +13,6 @@ public class PageSectionResponse {
     private Long pageSectionId;
     private Long pageId;
     private Integer order;
+    private String backgroundColor;
     private Integer columnCount;
 }

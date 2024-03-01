@@ -23,6 +23,19 @@ public class ThemeServiceImpl implements ThemeService {
     private final ThemeDtoMapper themeMapper;
 
     @Override
+    public ThemeResponse getCurrentTheme() throws ResourceNotFoundException {
+        List<Theme> themes = themeRepository.findAll();
+
+        for(Theme theme : themes) {
+            if (theme.getIsCurrent()) {
+                return themeMapper.mapThemeToThemeResponse(theme);
+            }
+        }
+
+        throw new ResourceNotFoundException("No current theme was found");
+    }
+
+    @Override
     public List<ThemeResponse> getAllThemes() {
         ArrayList<ThemeResponse> result = new ArrayList<>();
         ArrayList<Theme> themes = (ArrayList<Theme>) themeRepository.findAll();
@@ -45,7 +58,21 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     public Long createTheme(ThemeRequest request) {
         requestValidator.validateThemeRequest(request);
-        return themeRepository.save(themeMapper.mapThemeRequestToTheme(request)).getThemeId();
+        Theme theme = themeMapper.mapThemeRequestToTheme(request);
+
+        if (request.getIsCurrent()) {
+            List<Theme> themes = themeRepository.findAll();
+            for (Theme existingTheme : themes) {
+                if (existingTheme.getIsCurrent()) {
+                    existingTheme.setIsCurrent(false);
+                    themeRepository.save(existingTheme);
+                }
+            }
+        }
+
+        theme.setIsCurrent(request.getIsCurrent());
+
+        return themeRepository.save(theme).getThemeId();
     }
 
     @Override
@@ -57,6 +84,17 @@ public class ThemeServiceImpl implements ThemeService {
         }
         Theme theme = themeMapper.mapThemeRequestToTheme(request);
         theme.setThemeId(themeId);
+
+        if (request.getIsCurrent()) {
+            List<Theme> themes = themeRepository.findAll();
+            for (Theme existingTheme : themes) {
+                if (existingTheme.getIsCurrent()) {
+                    existingTheme.setIsCurrent(false);
+                    themeRepository.save(existingTheme);
+                }
+            }
+        }
+        theme.setIsCurrent(request.getIsCurrent());
 
         return themeRepository.save(theme).getThemeId();
     }

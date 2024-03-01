@@ -29,6 +29,18 @@ public class Theme {
     @Column(name = "theme_id")
     private Long themeId;
 
+    @Column(name = "title")
+    private String websiteTitle;
+
+    @Column(name = "favicon_path")
+    private String faviconPath;
+
+    @Column(name = "logo_path")
+    private String logoPath;
+
+    @Column(name = "is_current")
+    private Boolean isCurrent;
+
     @Column(name = "font_family")
     private String fontFamily;
 

@@ -4,5 +4,7 @@ public enum PageComponentType {
     IMAGE,
     GALLERY,
     VIDEO,
-    TEXT
+    TEXT,
+    TIMELINE,
+    DESCRIPTION_CARD
 }

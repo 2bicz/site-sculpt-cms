@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
-@Table(name = "page_sections", uniqueConstraints = @UniqueConstraint(columnNames = {"place_order"}))
+@Table(name = "page_sections")
 public class PageSection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,9 @@ public class PageSection {
     @ManyToOne
     @JoinColumn(name = "theme_id")
     private Theme pageSectionTheme;
+
+    @Column(name = "background_color")
+    private String backgroundColor;
 
     @OneToMany(mappedBy = "pageSection")
     @ToString.Exclude

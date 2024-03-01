@@ -5,9 +5,13 @@ import com.github.bicz.sitesculpt.exception.ResourceNotFoundException;
 import com.github.bicz.sitesculpt.page.dto.PageRequest;
 import com.github.bicz.sitesculpt.page.dto.PageResponse;
 import com.github.bicz.sitesculpt.page.dto.PageServiceRequestValidator;
+import com.github.bicz.sitesculpt.page.dto.generated_page.GeneratedPageResponse;
+import com.github.bicz.sitesculpt.page_section.dto.GeneratedPageSectionResponse;
 import com.github.bicz.sitesculpt.page.model.Page;
 import com.github.bicz.sitesculpt.page.repository.PageRepository;
 import com.github.bicz.sitesculpt.page.service.PageService;
+import com.github.bicz.sitesculpt.page_section.dto.mapper.PageSectionDtoMapper;
+import com.github.bicz.sitesculpt.page_section.model.PageSection;
 import com.github.bicz.sitesculpt.theme.model.Theme;
 import com.github.bicz.sitesculpt.theme.repository.ThemeRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,7 @@ public class PageServiceImpl implements PageService {
     private final PageRepository pageRepository;
     private final ThemeRepository themeRepository;
     private final PageServiceRequestValidator requestValidator;
+    private final PageSectionDtoMapper pageSectionDtoMapper;
 
     @Override
     public List<PageResponse> getAllPages() {
@@ -34,6 +39,8 @@ public class PageServiceImpl implements PageService {
             pageResponse.setPath(page.getPath());
             pageResponse.setOrder(page.getOrder());
             pageResponse.setIsBlogPage(page.getIsBlogPage());
+            pageResponse.setIsHeroEnabled(page.getIsHeroEnabled());
+            pageResponse.setHeroImagePath(page.getHeroImagePath());
 
             if (Objects.nonNull(page.getPageTheme())) {
                 pageResponse.setPageThemeId(page.getPageTheme().getThemeId());
@@ -45,6 +52,18 @@ public class PageServiceImpl implements PageService {
         response.sort(Comparator.comparingInt(PageResponse::getOrder));
 
         return response;
+    }
+
+    @Override
+    public List<String> getAllPaths() {
+        List<String> result = new ArrayList<>();
+        List<Page> pages = pageRepository.findAll();
+
+        for (Page page : pages) {
+            result.add(page.getPath());
+        }
+
+        return result;
     }
 
     @Override
@@ -61,12 +80,37 @@ public class PageServiceImpl implements PageService {
         pageResponse.setPath(page.getPath());
         pageResponse.setOrder(page.getOrder());
         pageResponse.setIsBlogPage(page.getIsBlogPage());
+        pageResponse.setIsHeroEnabled(page.getIsHeroEnabled());
+        pageResponse.setHeroImagePath(page.getHeroImagePath());
 
         if (Objects.nonNull(page.getPageTheme())) {
             pageResponse.setPageThemeId(page.getPageTheme().getThemeId());
         }
 
         return pageResponse;
+    }
+
+    @Override
+    public GeneratedPageResponse getGeneratedPageStructure(Long pageId) {
+        GeneratedPageResponse response = new GeneratedPageResponse();
+
+        Page page = obtainExistingPage(pageId);
+        List<PageSection> pageSections = page.getPageSections();
+
+        ArrayList<GeneratedPageSectionResponse> generatedPageSections = new ArrayList<>();
+        for (PageSection pageSection : pageSections) {
+            generatedPageSections.add(pageSectionDtoMapper.mapPageSectionToGeneratedPageSectionResponse(pageSection));
+        }
+
+        response.setPageId(page.getPageId());
+        response.setOrder(page.getOrder());
+        response.setIsHeroEnabled(page.getIsHeroEnabled());
+        response.setHeroImagePath(page.getHeroImagePath());
+
+        generatedPageSections.sort(Comparator.comparingInt(GeneratedPageSectionResponse::getOrder));
+        response.setSections(generatedPageSections);
+
+        return response;
     }
 
     @Override
@@ -87,6 +131,8 @@ public class PageServiceImpl implements PageService {
         page.setTitle(request.getTitle());
         page.setPath(request.getPath());
         page.setOrder(request.getOrder());
+        page.setIsHeroEnabled(request.getIsHeroEnabled());
+        page.setHeroImagePath(request.getHeroImagePath());
 
         return pageRepository.save(page).getPageId();
     }
@@ -122,6 +168,8 @@ public class PageServiceImpl implements PageService {
         page.setTitle(request.getTitle());
         page.setPath(request.getPath());
         page.setOrder(request.getOrder());
+        page.setIsHeroEnabled(request.getIsHeroEnabled());
+        page.setHeroImagePath(request.getHeroImagePath());
 
         return pageRepository.save(page).getPageId();
     }

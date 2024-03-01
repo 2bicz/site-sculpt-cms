@@ -8,25 +8,36 @@ import org.springframework.stereotype.Component;
 @Component
 public class ThemeDtoMapper {
     public Theme mapThemeRequestToTheme(ThemeRequest request) {
-        return new Theme(
-                request.getFontFamily(),
-                request.getFontColor(),
-                request.getPrimaryColor(),
-                request.getSecondaryColor(),
-                request.getTertiaryColor(),
-                request.getBackgroundColor()
-        );
+        Theme result = new Theme();
+
+        result.setWebsiteTitle(request.getWebsiteTitle());
+        result.setFaviconPath(request.getFaviconPath());
+        result.setLogoPath(request.getLogoPath());
+        result.setFontFamily(request.getFontFamily());
+        result.setFontColor(request.getFontColor());
+        result.setPrimaryColor(request.getPrimaryColor());
+        result.setSecondaryColor(request.getSecondaryColor());
+        result.setTertiaryColor(request.getTertiaryColor());
+        result.setBackgroundColor(request.getBackgroundColor());
+
+        return result;
     }
 
     public ThemeResponse mapThemeToThemeResponse(Theme theme) {
-        return new ThemeResponse(
-                theme.getThemeId(),
-                theme.getFontFamily(),
-                theme.getFontColor(),
-                theme.getPrimaryColor(),
-                theme.getSecondaryColor(),
-                theme.getTertiaryColor(),
-                theme.getBackgroundColor()
-        );
+        ThemeResponse result = new ThemeResponse();
+
+        result.setWebsiteTitle(theme.getWebsiteTitle());
+        result.setFaviconPath(theme.getFaviconPath());
+        result.setLogoPath(theme.getLogoPath());
+        result.setFontFamily(theme.getFontFamily());
+        result.setFontColor(theme.getFontColor());
+        result.setPrimaryColor(theme.getPrimaryColor());
+        result.setSecondaryColor(theme.getSecondaryColor());
+        result.setTertiaryColor(theme.getTertiaryColor());
+        result.setBackgroundColor(theme.getBackgroundColor());
+        result.setIsCurrent(theme.getIsCurrent());
+        result.setThemeId(theme.getThemeId());
+
+        return result;
     }
 }

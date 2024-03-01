@@ -1,8 +1,10 @@
 package com.github.bicz.sitesculpt.user.controller;
 
+import com.github.bicz.sitesculpt.user.dto.ResetPasswordRequest;
 import com.github.bicz.sitesculpt.user.dto.UserResponse;
 import com.github.bicz.sitesculpt.user.model.User;
 import com.github.bicz.sitesculpt.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,4 +29,9 @@ public class UserController {
         System.out.println("");
         return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
+
+//    @PostMapping(value = "/resetPassword")
+//    public ResponseEntity<?> resetPassword(HttpServletRequest servletRequest, @RequestBody ResetPasswordRequest request) {
+//        User user = userService;
+//    }
 }

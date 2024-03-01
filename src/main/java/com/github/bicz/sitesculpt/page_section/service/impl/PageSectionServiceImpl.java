@@ -54,8 +54,16 @@ public class PageSectionServiceImpl implements PageSectionService {
     }
 
     @Override
-    public Long createPageSection(PageSectionRequest request) {
+    public Long createPageSection(PageSectionRequest request) throws RequestNotCorrectException {
         requestValidator.validatePageSectionRequest(request);
+
+        Page page = obtainExistingPage(request.getPageId());
+        for (PageSection pageSection : page.getPageSections()) {
+            if (pageSection.getOrder().equals(request.getOrder())) {
+                throw new RequestNotCorrectException(String.format("Page section with order %d already exists for page %d", request.getOrder(), request.getPageId()));
+            }
+        }
+
         return pageSectionRepository.save(mapper.mapPageSectionRequestToPageSection(request)).getPageSectionId();
     }
 
@@ -64,9 +72,19 @@ public class PageSectionServiceImpl implements PageSectionService {
         PageSection pageSection = obtainExistingPageSection(pageSectionId);
         requestValidator.validatePageSectionRequest(request);
 
+        if (!pageSection.getOrder().equals(request.getOrder())) {
+            Page page = obtainExistingPage(request.getPageId());
+            for (PageSection pageSectionToCheck : page.getPageSections()) {
+                if (pageSectionToCheck.getOrder().equals(request.getOrder())) {
+                    throw new RequestNotCorrectException(String.format("Page section with order %d already exists for page %d", request.getOrder(), request.getPageId()));
+                }
+            }
+        }
+
         PageSection pageSectionUpdate = mapper.mapPageSectionRequestToPageSection(request);
         pageSection.setPage(pageSectionUpdate.getPage());
         pageSection.setOrder(pageSectionUpdate.getOrder());
+        pageSection.setBackgroundColor(pageSectionUpdate.getBackgroundColor());
 
         return pageSectionRepository.save(pageSection).getPageSectionId();
     }

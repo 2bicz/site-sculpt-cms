@@ -12,4 +12,7 @@ public class PageRequest {
     private Long themeId;
     private Integer order;
     private Boolean isBlog;
+    private Boolean isHeroEnabled;
+    private String heroImagePath;
 }
+

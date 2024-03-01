@@ -42,4 +42,10 @@ public class Page {
 
     @Column(name = "is_blog_page")
     private Boolean isBlogPage;
+
+    @Column(name = "is_hero_enabled")
+    private Boolean isHeroEnabled;
+
+    @Column(name = "hero_image_path")
+    private String heroImagePath;
 }

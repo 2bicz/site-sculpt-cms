@@ -23,6 +23,15 @@ public class ThemeController {
         return new ResponseEntity<>(themeService.getAllThemes(), HttpStatus.OK);
     }
 
+    @GetMapping("/current")
+    ResponseEntity<?> getCurrentTheme() {
+        try {
+            return new ResponseEntity<>(themeService.getCurrentTheme(), HttpStatus.OK);
+        } catch (ResourceNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
+
     @GetMapping("/{themeId}")
     ResponseEntity<?> getThemeById(@PathVariable Long themeId) {
         try {

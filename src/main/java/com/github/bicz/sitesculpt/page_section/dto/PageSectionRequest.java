@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class PageSectionRequest {
     private Long pageId;
     private Integer order;
+    private String backgroundColor;
 }

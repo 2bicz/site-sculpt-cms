@@ -23,10 +23,24 @@ public class PageController {
         return new ResponseEntity<>(pageService.getAllPages(), HttpStatus.OK);
     }
 
+    @GetMapping("/paths")
+    ResponseEntity<List<String>> getAllPaths() {
+        return new ResponseEntity<>(pageService.getAllPaths(), HttpStatus.OK);
+    }
+
     @GetMapping("/{pageId}")
     ResponseEntity<?> getPageById(@PathVariable Long pageId) {
         try {
             return new ResponseEntity<>(pageService.getPageById(pageId), HttpStatus.OK);
+        } catch (ResourceNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
+
+    @GetMapping("/generate/{pageId}")
+    ResponseEntity<?> getGeneratedPageStructure(@PathVariable Long pageId) {
+        try {
+            return new ResponseEntity<>(pageService.getGeneratedPageStructure(pageId), HttpStatus.OK);
         } catch (ResourceNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }

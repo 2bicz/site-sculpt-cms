@@ -6,6 +6,7 @@ import com.github.bicz.sitesculpt.theme.dto.ThemeResponse;
 import java.util.List;
 
 public interface ThemeService {
+    ThemeResponse getCurrentTheme();
     List<ThemeResponse> getAllThemes();
     ThemeResponse getThemeById(Long themeId);
     Long createTheme(ThemeRequest request);
